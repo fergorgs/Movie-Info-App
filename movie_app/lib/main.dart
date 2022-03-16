@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/Controller/Controller.dart';
 import 'package:movie_app/Views/homeScreen.dart';
 import 'package:movie_app/Views/detailsScreen.dart';
+import 'package:movie_app/Views/failedToLoadScreen.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 void main() {
   // runApp(
   //   MaterialApp(
-  //     home: Debug(),
+  //     home: Text('root'),
   //   )
   // );
   runApp(
     MaterialApp(
       initialRoute:  '/home',
       routes: {
-        '/': (context) => Text('Root'),// LoadingScreen(),
+        // '/': (context) => Text('Root'),// LoadingScreen(),
         '/home': (context) => HomeScreen(),
         '/details': (context) => DetailsScreen(),
       }

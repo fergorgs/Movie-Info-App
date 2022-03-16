@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:movie_app/Models/movieCatalog.dart';
 
@@ -11,12 +13,53 @@ class Controller extends ControllerMVC{
 
   final MovieCatalog _model;
 
-  Future<List<Map>> get previews => _model.getPreviews();
+  Future<List<Map>> get previews async{
+
+    List<Map> res = [];
+    
+    try
+    {
+     res = await _model.getPreviews();
+    }
+    on SocketException
+    {
+      print('Received socket exception');
+      res.add({'error' : 'socket'});
+      return res;
+    }
+    on Exception
+    {
+      print('Received generic exception');
+      res.add({'error' : 'generic'});
+      return res;
+    }
+      
+    res.add({'error' : null});
+    return res;
+    // return _model.getPreviews();
+  }
 
   Future<List<List>> getDetails(int id) async{
     
-    Map rawContent = await _model.getDetails(id);
+    List<List> displayableContent = [];
+    Map rawContent = {};
     
+    try{
+      rawContent = await _model.getDetails(id);
+    }
+    on SocketException
+    {
+      displayableContent.add(['socket']);
+      return displayableContent;
+    }
+    on Exception
+    {
+      displayableContent.add(['generic']);
+      return displayableContent;
+    }
+
+    print('LOG: (Controller) received back details');
+
     String spokenLangs = '';
     rawContent['spoken_languages'].forEach((lang) {
       spokenLangs += lang['name'] + ', ';
@@ -37,7 +80,7 @@ class Controller extends ControllerMVC{
 
     String imdbUrl = 'https://www.imdb.com/title/' + rawContent['imdb_id'];
 
-    List<List> displayableContent = [
+    displayableContent = [
       ['Title', rawContent['title']],
       ['Poster url', rawContent['poster_url']],
       ['Rating', rawContent['vote_avg']],
@@ -49,7 +92,7 @@ class Controller extends ControllerMVC{
       ['Genres', genres]
     ];
 
-    
+    displayableContent.add([null]);    
 
     return displayableContent;
 

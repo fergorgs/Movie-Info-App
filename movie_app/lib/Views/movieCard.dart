@@ -26,7 +26,7 @@ class MovieCard extends StatelessWidget {
     return GestureDetector(
       onTap: () { Navigator.pushNamed(context, '/details', arguments: {'id': id});},
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         color: Colors.grey[850],
         elevation: 10,
         child: Padding(
@@ -37,7 +37,6 @@ class MovieCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    // flex: 1,
                     child: AspectRatio(
                       aspectRatio: 0.8,
                       child: Image.network(poster_url,
@@ -48,7 +47,6 @@ class MovieCard extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    // flex: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

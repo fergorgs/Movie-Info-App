@@ -34,7 +34,7 @@ class MovieCatalog{
 
   Future<List<Map>> getPreviews() async{
 
-    print('LOG: (movieCatalog) retreiving previews for all movies');
+    // print('LOG: (movieCatalog) retreiving previews for all movies');
     // if there are no movies what so ever
       // fetchPreviews
     if(movies.isEmpty)

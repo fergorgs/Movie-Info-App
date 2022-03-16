@@ -6,11 +6,6 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[800],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[900],
-        title: Text('Details'),
-        centerTitle: true,
-      ),
       body: Center(
         child: SpinKitCircle(
           color: Colors.white,
