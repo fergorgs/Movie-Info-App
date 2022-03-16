@@ -1,5 +1,6 @@
 
-
+// MOVIE
+// Representa um filme. Guarda todas as informações trelevantes e que erão usadas pelo app
 class Movie{
 
   int id = -1;
@@ -63,6 +64,8 @@ class Movie{
     production_year = json['release_date'].substring(0, 4);
   }
 
+  // convertToMap
+  // convrete a classe em um mapa, como uma forma de trasmitir as informações de forma mais simples
   Map convertToMap(){
 
     Map converted = {

@@ -6,6 +6,8 @@ class FailedToLoadScreen extends StatelessWidget {
   final String errorMessage;
   final dynamic retryFunction;
 
+  // widget simples que contem uma mensgaem de erro personalizada e
+  // um botão de 'tentar novamente'
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +26,8 @@ class FailedToLoadScreen extends StatelessWidget {
                 )
               ),
               GestureDetector(
-                onTap: () {retryFunction();},
+                // a função executada pelo botão é passada pelo pai
+                onTap: () { retryFunction(); },
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Text(

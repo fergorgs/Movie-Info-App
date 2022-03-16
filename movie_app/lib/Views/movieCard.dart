@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
+// MOVIE CARD--------------------------------------------
+// Exibe as informações resumidas de um dado filme
 class MovieCard extends StatelessWidget {
   
   final int id;
   final String title;
   final String poster_url;
-  final String placeholder_url = 'https://d32qys9a6wm9no.cloudfront.net/images/movies/poster/500x735.png';
   final double vote_average;
   final String production_year;
   final List genres;
@@ -34,18 +35,24 @@ class MovieCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              
+              // parte superior do card--------------
               Row(
                 children: [
                   Expanded(
+
+                    // poster------------------------
                     child: AspectRatio(
                       aspectRatio: 0.8,
                       child: Image.network(poster_url,
                         errorBuilder: (context, exception, stackTrace) {
-                            return Image(image: NetworkImage(placeholder_url));
+                            return Image(image: AssetImage('placeHolderPoster.png'));
                         },
                       )
                     ),
                   ),
+
+                  // informações adicionais----------
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,6 +104,8 @@ class MovieCard extends StatelessWidget {
                   )
                 ],
               ),
+
+              // título do filme----------------------
               SizedBox(height: 30),
               Text(
                 title,

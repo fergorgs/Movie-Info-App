@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/Controller/Controller.dart';
 import 'package:movie_app/Views/movieCard.dart';
@@ -5,6 +7,8 @@ import 'package:movie_app/Views/loadingScreen.dart';
 import 'package:movie_app/Views/failedToLoadScreen.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
+// TELA PRINCIPAL-----------------------------------------------------------------------
+// Lista detalhes resumidos dos filmes e permite acesso à tela de detalhes de cada filme
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -19,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map> movieDatas = [];
   List<Widget> movieCards = [];
 
+  // buildMovieCards
+  // dada uma lista com os dados dos filmes
+  // constroi uma lista de widgets que serão os cards para cada filme
   void buildMovieCards(){
 
     movieDatas.forEach((movie) {
@@ -36,40 +43,55 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void refreshPage(){
-    try{
-      _con.previews.then((res) {
+  // refreshPage
+  // solicita ao controlador que forneça os dados dos filmes
+  void refreshPage() async{
 
-        if(res.length <= 1 || res[res.length-1]['error'] != null)
-        {
-          setState(() {
-            if(res[res.length-1]['error'] == 'socket')
-              errorMessage = 'No internet connection!';
-            else
-              errorMessage = 'We are having some dificulties, please try again latter';
-            loading = false;
-            failedToLoad = true;
-          });
-        }
-        else
-        {
-          res.removeLast();
-          setState(() {
-            movieDatas = res;
-            buildMovieCards();
-            loading = false;
-            } 
-          );
-        }
-      });
-    } 
-    catch(e) 
-    {
-      failedToLoad = true;
-    }
+    // esse await tem um propósito apenas estético. Ele força que a tela de carregamento
+    // seja exibida por pelo menos meio segundo. Remover isso pode fazer com que o usuário
+    // tenha a impressão que o botão de recarregar a página ('retry') não está funcionando
+    await Future.delayed(const Duration(milliseconds: 500), () {});
+    
+    // solicita ao controlador que forneça os dados dos filmes
+    // se bem sucedido, atualiza a tela e exibe os dados
+    _con.previews.then((res) {
+
+        setState(() {
+          movieDatas = res;
+          buildMovieCards();
+          loading = false;
+          } 
+        );
+
+    // se ocorre um erro, exibe a tela de erro junta à mensagem apropriada de acordo
+    // com o tipo de erro
+    }).catchError((error) {
+      
+      if(error.runtimeType == SocketException)
+      {
+        setState(() {
+          errorMessage = 'No internet connection!';
+          loading = false;
+          failedToLoad = true;
+        });
+      }
+      else
+      {
+        setState(() {
+          errorMessage = 'We are having some dificulties, please try again latter';
+          loading = false;
+          failedToLoad = true;
+        });
+      }
+    });
   }
 
+  // getBody
+  // determina e retorna o Widget que será o corpo da página
   Widget getPageBody(){
+
+    // se 'loading', busca os dados dos filmes
+    // enquanto a operação não conclui, exibe a tela de 'carregando'
     if(loading)
     {
       refreshPage();
@@ -77,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     else
     {
+      // se a operação get falhou, exibe a tela de erro com a mensagem apropriada
       if(failedToLoad)
         return FailedToLoadScreen(
           errorMessage, 
@@ -85,12 +108,12 @@ class _HomeScreenState extends State<HomeScreen> {
               loading = true;
               failedToLoad = false;
             });
-            // Future.delayed(const Duration(milliseconds: 500), () {});
             refreshPage();
           }
         );
       else
       {
+        // se houve sucesso, exibe a lista de filmes
         return SingleChildScrollView(
           child: Container(
             color: Colors.grey[800],
@@ -98,6 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 20),
+                
+                // título no topo da pagina-----------
                 Center(
                   child: DefaultTextStyle(
                     style: TextStyle(
@@ -108,6 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('Great movies from the last decades'),
                   ),
                 ),
+
+                // lista de filmes-------------------
                 Container(
                   color: Colors.grey[800],
                   child: Padding(
@@ -130,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      // Appbar com o logo e um botão de filtragem (a ser feito)
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.grey[900],
@@ -150,6 +178,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Image.asset('movieIcon.png'),
         )
       ),
+
+      // corpo
       body: getPageBody(),
     );
   }

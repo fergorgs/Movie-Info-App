@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// DATA FETCHER
+// se comunica com a API que contem as infos dos filmes
 class DataFetcher{
 
   String endPoint = 'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies';
 
+  // fetchAllMovies
+  // busca as informações resumidas de todos os filmes
+  // converte as informações em uma lista de mapas json
+  // trata qualquer excessão como uma socket exception
   Future<List> fetchAllMovies() async{
 
     print('LOG: (dataFetcher) Fetching previews data');
@@ -18,13 +24,17 @@ class DataFetcher{
     }
     on Exception
     {
-      print('Caught exception');
+      print('LOG: (dataFetcher) Caught exception');
       throw SocketException('Network error');
     }
 
     return jsonResponse;
   }
 
+  // fetchMovie
+  // busca as informações detalhadas de um filme expecifico
+  // converte as informações em um mapa json
+  // trata qualquer excessão como uma socket exception
   Future<Map> fetchMovie(int id) async{
 
     print('LOG: (dataFetcher) Fetching details for movie of id: ' + id.toString());
@@ -40,9 +50,5 @@ class DataFetcher{
     }
 
     return jsonResponse;
-    // return json.decode(res.body);
-    // var url = Uri.parse(endPoint + '/' + id.toString());
-    // var res = await http.get(url);
-    // return jsonDecode(utf8.decode(res.bodyBytes)) as Map;
   }
 }

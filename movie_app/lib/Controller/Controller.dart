@@ -1,8 +1,9 @@
 import 'dart:io';
-
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:movie_app/Models/movieCatalog.dart';
 
+// CONTROLADOR
+// Faz a interface entre as telas (Views) e as classes de dados (Models)
 class Controller extends ControllerMVC{
 
   factory Controller([StateMVC? state]) => _this ??= Controller._(state);
@@ -13,6 +14,9 @@ class Controller extends ControllerMVC{
 
   final MovieCatalog _model;
 
+  // getPreviews
+  // solicita ao model as informações resumidas dos filmes
+  // imprime no console qualquer excessão detectada
   Future<List<Map>> get previews async{
 
     List<Map> res = [];
@@ -23,43 +27,45 @@ class Controller extends ControllerMVC{
     }
     on SocketException
     {
-      print('Received socket exception');
-      res.add({'error' : 'socket'});
-      return res;
+      print('LOG: (Controller) Caught socket exception');
+      throw SocketException('Socket exception');
     }
     on Exception
     {
-      print('Received generic exception');
-      res.add({'error' : 'generic'});
-      return res;
+      print('LOG: (Controller) Caught generic exception');
+      throw Exception('Exception');
     }
       
-    res.add({'error' : null});
     return res;
-    // return _model.getPreviews();
   }
 
+  // getDetails
+  // solicita ao model as informações detalhadas de um determinado filme
+  // processa e reorganiza os dados recebidos, e deixa-os no formato esperado pelo front
+  // imprime no console qualuqer excessão detectada
   Future<List<List>> getDetails(int id) async{
     
     List<List> displayableContent = [];
     Map rawContent = {};
     
+    // solicita as informações e trata excessões
     try{
       rawContent = await _model.getDetails(id);
     }
     on SocketException
     {
-      displayableContent.add(['socket']);
-      return displayableContent;
+      print('LOG: (Controller) Caught socket exception');
+      throw SocketException('Socket exception');
     }
     on Exception
     {
-      displayableContent.add(['generic']);
-      return displayableContent;
+      print('LOG: (Controller) Caught generic exception');
+      throw Exception('Exception');
     }
 
     print('LOG: (Controller) received back details');
 
+    // converte as listas de linguas, paises e generos em strings que podem ser exibidas ao usuário
     String spokenLangs = '';
     rawContent['spoken_languages'].forEach((lang) {
       spokenLangs += lang['name'] + ', ';
@@ -78,8 +84,10 @@ class Controller extends ControllerMVC{
     });
     genres = genres.substring(0, genres.length-2);
 
+    // forma a url da imdb
     String imdbUrl = 'https://www.imdb.com/title/' + rawContent['imdb_id'];
 
+    // estrutura a lista com as informações num formato esperado pelo front
     displayableContent = [
       ['Title', rawContent['title']],
       ['Poster url', rawContent['poster_url']],
@@ -92,12 +100,6 @@ class Controller extends ControllerMVC{
       ['Genres', genres]
     ];
 
-    displayableContent.add([null]);    
-
     return displayableContent;
-
   }
-    
-
-
 }

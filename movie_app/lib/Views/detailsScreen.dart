@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/Views/loadingScreen.dart';
 import 'package:movie_app/Controller/Controller.dart';
@@ -5,6 +7,8 @@ import 'package:movie_app/Views/failedToLoadScreen.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
+// TELA DE DETALHES----------------------------------------------------------------
+// EXibe todos as informações detalhadas de um filme específico
 class DetailsScreen extends StatefulWidget {
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -28,7 +32,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   List<List> contentData = [];
   List<Widget> contentWidgets = [];
 
-
+  // buildContentWidgets
+  // dada uma lista de informções sobre o filme
+  // constroi uma lista de widgets para exibir essas informações
   void buildContentWidgets(){
 
     for(int i = 2; i < contentData.length; i++)
@@ -56,59 +62,60 @@ class _DetailsScreenState extends State<DetailsScreen> {
     }
   }
     
-  void refreshPage(){
+  void refreshPage() async{
 
-    try
-    {
-      _con.getDetails(movieId).then((data) {
+    // esse await tem um propósito apenas estético. Ele força que a tela de carregamento
+    // seja exibida por pelo menos meio segundo. Remover isso pode fazer com que o usuário
+    // tenha a impressão que o botão de recarregar a página ('retry') não está funcionando
+    await Future.delayed(const Duration(milliseconds: 500), () {});
 
-        print('Received data: ');
-        print(data);
-        if(data.length <= 1 || data[data.length-1][0] != null)
-        {
-          setState(() {
-            if(data[data.length-1][0] == 'socket')
-              errorMessage = 'No internet connection!';
-            else
-              errorMessage = 'We are having some dificulties, please try again latter';
-            loading = false;
-            failedToLoad = true;
-          });
-        }
-        else
-        {
-          data.removeLast();
-          setState(() {
-            contentData = data;
-            title = contentData[0][1];
-            poster_url = contentData[1][1];
-            print('Poster url:');
-            print(poster_url);
-            
-            buildContentWidgets();
+    // solicita ao controlador que forneça os dados do filme
+    // se bem sucedido, atualiza a tela e exibe os dados
+    _con.getDetails(movieId).then((data) {
 
-            loading = false;
-          });
-        }
-      });
-    } 
-    catch(e) 
-    {
-      failedToLoad = true;
-    }
+        setState(() {
+          contentData = data;
+          title = contentData[0][1];
+          poster_url = contentData[1][1];
+          buildContentWidgets();
+          loading = false;
+        });
+
+    // se ocorre um erro, exibe a tela de erro junta à mensagem apropriada de acordo
+    // com o tipo de erro
+    }).catchError((error) {
+    
+      if(error.runtimeType == SocketException)
+      {
+        setState(() {
+          errorMessage = 'No internet connection!';
+          loading = false;
+          failedToLoad = true;
+        });
+      }
+      else
+      {
+        setState(() {
+          errorMessage = 'We are having some dificulties, please try again latter';
+          loading = false;
+          failedToLoad = true;
+        });
+      }
+    });
   }
 
+  // getBody
+  // determina e retorna o Widget que será o corpo da página
   Widget getPageBody(){
 
-    if(loading){
-
-      print('Trying to load for movie id: ' + movieId.toString());
+    if(loading)
+    {
       refreshPage();
-
       return LoadingScreen();
     }
     else
     {
+      // se a operação get falhou, exibe a tela de erro com a mensagem apropriada
       if(failedToLoad)
         return FailedToLoadScreen(
           errorMessage, 
@@ -117,14 +124,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
               loading = true;
               failedToLoad = false;
             });
-            Future.delayed(const Duration(milliseconds: 500), () {});
             refreshPage();
           }
         );
       else
       {
+        // se houver sucesso, exibe os detalhes do filme
         return Stack(
           children: [
+            // Imagem de fundo
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -132,11 +140,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   poster_url,
                   fit: BoxFit.fitWidth,
                   errorBuilder: (context, exception, stackTrace) {
-                      return Image(image: NetworkImage(placeholder_url), fit: BoxFit.fitWidth,);
+                      return Image(image: AssetImage('placeHolderPoster.png'));
                   },
                 ),
               ]
             ),
+            // frontground da tela
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -173,6 +182,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ]
                     ),
                   ),
+                  
+                  // lista de informações----------------------------
                   Container(
                     color: Colors.grey[800],
                     child: Padding(
@@ -195,6 +206,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     
+    // recebendo dados passados pela rota
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
    
     movieId = data['id'];

@@ -1,13 +1,22 @@
 import 'package:movie_app/Models/dataFetcher.dart';
 import 'package:movie_app/Models/movie.dart';
 
+// MOVIE CATALOG
+// controla as informações armazenadas em cache dos filmes
+//solicita para o dataFecther novas informações quando necessário
 class MovieCatalog{
 
   DataFetcher fetcher = new DataFetcher();
 
+  // mantem um hashset com o id de todos os filmes que já possuem suas informações detalhadas armazenadas em cache
+  // mantem um hashmap com o id dos filmes como chave e um objeto filme como valor contendo as infos do filme com aquele id
   Set<int> cachedMovies = {};
   Map<int, Movie> movies = {};
 
+  // apiFetchPreviews
+  // solicita para o dataFecther as informações resumidas de todos os filmes
+  // dada as informações recebidas, converte-as em objetos 'Movie' e salva-os
+  // no hashmap 'movies'
   Future<void> apiFetchPreviews() async{
 
     List movieDatas = [];
@@ -20,11 +29,13 @@ class MovieCatalog{
     });
   }
 
+  // apiFetchDetails
+  // dado um id, solicita para o dataFetcher as informações detalhadas daquele filme
+  // cria um novo objeto 'Movie' a partir das informações recebidas e substitui o objeto antigo representante daquele filme no hashmap 'movies'
+  // salva o id do filme no hashset, indicando que aquele filme possui a partir de agora as informações salvas em cache,
+  // e por isso não precisam ser recarregadas
   Future<void> apiFetchDetails(int id) async{
-    // fetch that movie's data
-    // create a new movie object from that data
-    // replace the old movie object with the new one on the movies map
-    // add current movie's id to the cached list
+
     Map movieData = {};
     await fetcher.fetchMovie(id).then((value) {movieData = value;});
     Movie movie = new Movie.fromCompleteJson(movieData);
@@ -32,40 +43,38 @@ class MovieCatalog{
     cachedMovies.add(movie.id);
   }
 
+  // getPreviews
+  // retorna uma lista de mapas, cada um representando um objeto 'movie'
   Future<List<Map>> getPreviews() async{
 
-    // print('LOG: (movieCatalog) retreiving previews for all movies');
-    // if there are no movies what so ever
-      // fetchPreviews
+    // se o hashmap de cache está vazio, solicita ao dataFetcher novos dados
     if(movies.isEmpty)
       await apiFetchPreviews();
 
-    // create a new list
-    // for each movie object present in the movies list
-    // convert it into a map format and add it to the new list
-    // return the new list
+    // itera sobre o hashmap de cache e converte cada objeto movie em um mapa
     List<Map> movieMaps = [];
     movies.forEach((key, value) => movieMaps.add(value.convertToMap()));
 
+    // retorna uma lisata com os mapas
     return movieMaps;
   }
 
+  // getDetails
+  // retorna um mapa representando o objeto 'movie' com o id correspondente
   Future<Map> getDetails(int id) async{
 
     print('LOG: (movieCatalog) retreiving details for movie of id: ' + id.toString());
-    // if there are no movies what so ever
-      // fetchPreviews
+    
+    // se o hashmap de cache está vazio, solicita ao dataFetcher novos dados
     if(movies.isEmpty)
       await apiFetchPreviews();
     
-    // if the requested movie is not cached
-      // fetchDetails
+    // se o id do filme não consta no hashset, significa que aquele filme ainda não tem em cache suas informações
+    // detalhadas, apenas suas informações resumidas. Por isso, solicita ao dataFetcher os dados detalhados
     if(!cachedMovies.contains(id))
       await apiFetchDetails(id);
     
-    // get the requested movie from the map
-    // convert it into a map format
-    // return the map
+    // retorna um mapa correspondente ao obejto 'movie' do filme com aquele id
     return movies[id]!.convertToMap();
   }
 
