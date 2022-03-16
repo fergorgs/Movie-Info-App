@@ -17,9 +17,13 @@ class Controller extends ControllerMVC{
   // getPreviews
   // solicita ao model as informações resumidas dos filmes
   // imprime no console qualquer excessão detectada
-  Future<List<Map>> get previews async{
+  Future<List<Map>> getPreviews(List genres) async{
+
+    print('genres to filter');
+    print(genres);
 
     List<Map> res = [];
+    List<Map> filteredRes = [];
     
     try
     {
@@ -35,9 +39,68 @@ class Controller extends ControllerMVC{
       print('LOG: (Controller) Caught generic exception');
       throw Exception('Exception');
     }
+    
+    if(genres.length == 0)
+      return res;
+
+    for(int i = 0; i < res.length; i++)
+    {
+      var movie = res[i];
+
+      for(int j = 0; j < movie['genres'].length; j++)
+      {
+        var genre = movie['genres'][j];
+        if(genres.contains(genre))
+        {
+          filteredRes.add(movie);
+          break;
+        }
+      }
+    }
       
-    return res;
+    print('FIltered');
+    print(filteredRes);
+    return filteredRes;
   }
+
+  // Future<List<Map>> getPreviewsGenreFiltered(List genres) async{
+
+
+  //   List<Map> res = [];
+  //   List<Map> filteredRes = [];
+    
+  //   try
+  //   {
+  //    res = await _model.getPreviews();
+  //   }
+  //   on SocketException
+  //   {
+  //     print('LOG: (Controller) Caught socket exception');
+  //     throw SocketException('Socket exception');
+  //   }
+  //   on Exception
+  //   {
+  //     print('LOG: (Controller) Caught generic exception');
+  //     throw Exception('Exception');
+  //   }
+
+  //   for(int i = 0; i < res.length; i++)
+  //   {
+  //     var movie = res[i];
+
+  //     for(int j = 0; j < movie['genres'].length; j++)
+  //     {
+  //       var genre = movie['genres'][j];
+  //       if(genres.contains(genre))
+  //       {
+  //         filteredRes.add(movie);
+  //         break;
+  //       }
+  //     }
+  //   }
+      
+  //   return filteredRes;
+  // }
 
   // getDetails
   // solicita ao model as informações detalhadas de um determinado filme

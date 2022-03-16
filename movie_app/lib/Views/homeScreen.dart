@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:movie_app/Views/filterMenu.dart';
 import 'package:movie_app/Controller/Controller.dart';
 import 'package:movie_app/Views/movieCard.dart';
 import 'package:movie_app/Views/loadingScreen.dart';
@@ -22,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final Controller _con = Controller();
   List<Map> movieDatas = [];
   List<Widget> movieCards = [];
+  List<String> genresToFilter = [];
 
   // buildMovieCards
   // dada uma lista com os dados dos filmes
@@ -47,6 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // solicita ao controlador que forneça os dados dos filmes
   void refreshPage() async{
 
+    
+
     // esse await tem um propósito apenas estético. Ele força que a tela de carregamento
     // seja exibida por pelo menos meio segundo. Remover isso pode fazer com que o usuário
     // tenha a impressão que o botão de recarregar a página ('retry') não está funcionando
@@ -54,10 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
     
     // solicita ao controlador que forneça os dados dos filmes
     // se bem sucedido, atualiza a tela e exibe os dados
-    _con.previews.then((res) {
+    _con.getPreviews(genresToFilter).then((res) {
 
+        print('inside refrsh');
         setState(() {
           movieDatas = res;
+          movieCards = [];
           buildMovieCards();
           loading = false;
           } 
@@ -157,20 +163,41 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.grey[800],
       // Appbar com o logo e um botão de filtragem (a ser feito)
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.grey[900],
         toolbarHeight: 70,
         actions: [
-          // Padding(
-          //   padding: const EdgeInsets.fromLTRB(0,0,20,0),
-          //   child: IconButton(
-          //     onPressed: () {print('pressed');},
-          //     iconSize: 35,
-          //     icon: Icon(Icons.filter_alt_sharp)
-          //   ),
-          // )
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,0,20,0),
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.grey[850],
+                      contentPadding: EdgeInsets.all(0),
+                      content: FilterMenu(genresToFilter, (genreList) {
+                          
+                          setState(() {
+                            genresToFilter = genreList;
+                            loading = true;
+                            failedToLoad = false;
+                          });
+                          refreshPage();
+                        }
+                      ),
+                    );
+                  }
+                );
+              },
+              iconSize: 35,
+              icon: Icon(Icons.filter_alt_sharp)
+            ),
+          )
         ],
         title: CircleAvatar(
           radius: 35,
