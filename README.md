@@ -5,4 +5,4 @@ Projeto desenvolvido para o desafio técnico da Tokenlab para o "Estágio na ár
 - Tecnologia utilizada: Flutter
 - Padrão de arquitetura utilizado: MVC
 
-Download o apk ou acesse a pasta "[more details] (https://github.com/fergorgs/moviesApp/tree/master/more_details)" para capturas de tela e detalhes sobre o funcionamento do app
+Download o apk ou acesse a pasta "[more details](https://github.com/fergorgs/moviesApp/tree/master/more_details)" para capturas de tela e detalhes sobre o funcionamento do app
