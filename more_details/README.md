@@ -1,5 +1,12 @@
 # App overview
+Itens abordados neste readme:
+- [Tratamento de erros](#tratamento)
+- [Cache](#cache)
+- [Arquitetura e organização das classes](#arquitetura)
+- [Screenshots](#prints)
 
+
+<a name="tratamento"></a>
 ## Tratamento de erros
 
 O app oferece os seguintes tratamentos de erros:
@@ -8,11 +15,13 @@ O app oferece os seguintes tratamentos de erros:
 - Campos nulos ou strings vazias fornecidos pela API são omitidos durante a exibição das informações
 - Posters que falham em carregar são substituídos por uma imagem placeholder
 
-## Armazenamento em cache
+<a name="cache"></a>
+## Cache
 
 Inicialmente, o app mantém em cache apenas as informações necessárias para o 'preview' dos filmes. As informações completas de cada filme são baixadas e armazenadas em cache a medida que o usuário acessa cada um dos filmes.
 
-## Organização das classes e arquitetura
+<a name="arquitetura"></a>
+## Arquitetura e organização das classes
 
 A arquitetura utilizada foi a MVC. Dessa forma, as classes podem ser divididas em três categorias:
 
@@ -27,6 +36,7 @@ Encarregado de fazer a interface entre as vies e as classes representadoras de d
 ### Models
 Representam os dados. A classe 'movie' representa um filme e contem propriedades ondeserão armazenadas todas as informações de um filme. A classe 'movieCatalog' é responsável por manter e administrar os filmes salvos em cache, além de solicitar informações adicionais de filmes que ainda não constam em cache. A classe 'dataFetcher' é a responsavel por fazer a comuicação com a API
 
+<a name="prints"></a>
 ## Screenshots
 
 <table style="border-color: white">
