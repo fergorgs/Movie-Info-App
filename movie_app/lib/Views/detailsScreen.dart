@@ -96,7 +96,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       else
       {
         setState(() {
-          errorMessage = 'We are having some dificulties, please try again latter';
+          errorMessage = 'We are having some dificulties, please try again later';
           loading = false;
           failedToLoad = true;
         });

@@ -16,15 +16,15 @@ class Controller extends ControllerMVC{
 
   // getPreviews
   // solicita ao model as informações resumidas dos filmes
-  // imprime no console qualquer excessão detectada
+  // se necessário, filtra as informações de acordo com os parâmetros
+  // definidos pelo usuário
   Future<List<Map>> getPreviews(List genres) async{
-
-    print('genres to filter');
-    print(genres);
 
     List<Map> res = [];
     List<Map> filteredRes = [];
     
+    // solicita as informações ao model
+    // trata qualquer excessão
     try
     {
      res = await _model.getPreviews();
@@ -40,9 +40,14 @@ class Controller extends ControllerMVC{
       throw Exception('Exception');
     }
     
+    // se nenhum gênero foi selecionado, retorna todos os filmes
+    // sem filtrar nada
     if(genres.length == 0)
       return res;
 
+    // caso contrário, itera sobre os filmes, mantendo na lista que 
+    // será retornada apenas aqueles que contém pelo menos um dos gêneros
+    // indicados pelo usuário
     for(int i = 0; i < res.length; i++)
     {
       var movie = res[i];
@@ -58,49 +63,9 @@ class Controller extends ControllerMVC{
       }
     }
       
-    print('FIltered');
-    print(filteredRes);
     return filteredRes;
   }
 
-  // Future<List<Map>> getPreviewsGenreFiltered(List genres) async{
-
-
-  //   List<Map> res = [];
-  //   List<Map> filteredRes = [];
-    
-  //   try
-  //   {
-  //    res = await _model.getPreviews();
-  //   }
-  //   on SocketException
-  //   {
-  //     print('LOG: (Controller) Caught socket exception');
-  //     throw SocketException('Socket exception');
-  //   }
-  //   on Exception
-  //   {
-  //     print('LOG: (Controller) Caught generic exception');
-  //     throw Exception('Exception');
-  //   }
-
-  //   for(int i = 0; i < res.length; i++)
-  //   {
-  //     var movie = res[i];
-
-  //     for(int j = 0; j < movie['genres'].length; j++)
-  //     {
-  //       var genre = movie['genres'][j];
-  //       if(genres.contains(genre))
-  //       {
-  //         filteredRes.add(movie);
-  //         break;
-  //       }
-  //     }
-  //   }
-      
-  //   return filteredRes;
-  // }
 
   // getDetails
   // solicita ao model as informações detalhadas de um determinado filme
@@ -128,7 +93,8 @@ class Controller extends ControllerMVC{
 
     print('LOG: (Controller) received back details');
 
-    // converte as listas de linguas, paises e generos em strings que podem ser exibidas ao usuário
+    // converte as listas de linguas, paises e generos em strings 
+    // que podem ser exibidas ao usuário
     String spokenLangs = '';
     rawContent['spoken_languages'].forEach((lang) {
       spokenLangs += lang['name'] + ', ';
@@ -158,7 +124,7 @@ class Controller extends ControllerMVC{
       ['Production year', rawContent['production_year']],
       ['Overview', rawContent['overview']],
       ['Spoken Languages', spokenLangs],
-      ['Shoot in', countries],
+      ['Shot in', countries],
       ['IMDb page', imdbUrl],
       ['Genres', genres]
     ];

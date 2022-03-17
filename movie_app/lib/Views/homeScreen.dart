@@ -49,8 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // solicita ao controlador que forneça os dados dos filmes
   void refreshPage() async{
 
-    
-
     // esse await tem um propósito apenas estético. Ele força que a tela de carregamento
     // seja exibida por pelo menos meio segundo. Remover isso pode fazer com que o usuário
     // tenha a impressão que o botão de recarregar a página ('retry') não está funcionando
@@ -60,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // se bem sucedido, atualiza a tela e exibe os dados
     _con.getPreviews(genresToFilter).then((res) {
 
-        print('inside refrsh');
         setState(() {
           movieDatas = res;
           movieCards = [];
@@ -84,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
       else
       {
         setState(() {
-          errorMessage = 'We are having some dificulties, please try again latter';
+          errorMessage = 'We are having some dificulties, please try again later';
           loading = false;
           failedToLoad = true;
         });
@@ -127,16 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 20),
-                
-                // título no topo da pagina-----------
-                Center(
-                  child: DefaultTextStyle(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                  child: Text(
+                    'Great movies from the last decades',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.grey[300],
-                      fontSize: 20,
+                      fontSize: 35,
                       fontStyle: FontStyle.italic
                     ),
-                    child: Text('Great movies from the last decades'),
                   ),
                 ),
 
@@ -164,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[800],
-      // Appbar com o logo e um botão de filtragem (a ser feito)
+      // Appbar com o logo e um botão de filtragem
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.grey[900],
@@ -172,6 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0,0,20,0),
+
+            // botão de filtragem
             child: IconButton(
               onPressed: () {
                 showDialog(
@@ -201,6 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         ],
+
+        // logo----------------------
         title: CircleAvatar(
           radius: 35,
           backgroundColor: Colors.grey[900],
@@ -208,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ),
 
-      // corpo
+      // corpo----------------------
       body: getPageBody(),
     );
   }

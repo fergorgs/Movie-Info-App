@@ -10,12 +10,16 @@ class FilterMenu extends StatefulWidget {
   _FilterMenuState createState() => _FilterMenuState(prevSelectedGenres, filterFunction);
 }
 
+
+// FILTER MENU
+// Menu para o usuário filtrar os filmes por gênero
 class _FilterMenuState extends State<FilterMenu> {
 
   _FilterMenuState(this.prevSelectedGenres, this.filterFunction);
   final List<String> prevSelectedGenres;
   final Function filterFunction;
 
+  // hashmap para controlar quais generos foram selecionados
   Map genres = {
     'Comedy' : false,
     'Drama' : false,
@@ -39,6 +43,9 @@ class _FilterMenuState extends State<FilterMenu> {
     });
   }
 
+  // convertMapToList
+  // converte o hashmap de generos selecionados para uma lista,
+  // que é o formato esperado pelo controlador
   List<String> convertMapToList(){
 
     List<String> genreList = [];
@@ -52,6 +59,9 @@ class _FilterMenuState extends State<FilterMenu> {
     return genreList;
   }
 
+  // getGenreBoxes
+  // gera uma lista de checkboxes, cada uma para um gênero,
+  // e associa cada uma a uma chave do hashmap
   List<Widget> getGenreBoxes(){
 
     List<Widget> genreBoxes = [];
@@ -90,17 +100,22 @@ class _FilterMenuState extends State<FilterMenu> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          SizedBox(height: 5),
           Text(
             'Filter by genre',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 22,
               color: Colors.grey[300]
             )
           ),
+          
+          // lista de checkboxes
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: getGenreBoxes(),
           ),
+
+          // botões de reset e apply
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
