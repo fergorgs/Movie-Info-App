@@ -140,7 +140,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   poster_url,
                   fit: BoxFit.fitWidth,
                   errorBuilder: (context, exception, stackTrace) {
-                      return Image(image: AssetImage('placeHolderPoster.png'));
+                      return Image(image: AssetImage('assets/placeHolderPoster.png'));
                   },
                 ),
               ]

@@ -46,7 +46,7 @@ class MovieCard extends StatelessWidget {
                       aspectRatio: 0.8,
                       child: Image.network(poster_url,
                         errorBuilder: (context, exception, stackTrace) {
-                            return Image(image: AssetImage('placeHolderPoster.png'));
+                            return Image(image: AssetImage('assets/placeHolderPoster.png'));
                         },
                       )
                     ),

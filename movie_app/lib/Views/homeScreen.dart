@@ -180,7 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     return AlertDialog(
                       backgroundColor: Colors.grey[850],
                       contentPadding: EdgeInsets.all(0),
-                      content: FilterMenu(genresToFilter, (genreList) {
+                      content: SingleChildScrollView(
+                        child: FilterMenu(genresToFilter, (genreList) {
                           
                           setState(() {
                             genresToFilter = genreList;
@@ -190,6 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           refreshPage();
                         }
                       ),
+                      )
                     );
                   }
                 );
@@ -202,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: CircleAvatar(
           radius: 35,
           backgroundColor: Colors.grey[900],
-          child: Image.asset('movieIcon.png'),
+          child: Image.asset('assets/movieIcon.png'),
         )
       ),
 
