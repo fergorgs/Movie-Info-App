@@ -117,7 +117,7 @@ class Controller extends ControllerMVC{
     String imdbUrl = 'https://www.imdb.com/title/' + rawContent['imdb_id'];
 
     // estrutura a lista com as informações num formato esperado pelo front
-    displayableContent = [
+    var aux = [
       ['Title', rawContent['title']],
       ['Poster url', rawContent['poster_url']],
       ['Rating', rawContent['vote_avg']],
@@ -128,6 +128,12 @@ class Controller extends ControllerMVC{
       ['IMDb page', imdbUrl],
       ['Genres', genres]
     ];
+
+    aux.forEach((pair) {
+
+      if(pair[1] != null && pair[1] != '')
+        displayableContent.add(pair);
+    });
 
     return displayableContent;
   }

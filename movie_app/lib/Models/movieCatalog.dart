@@ -10,8 +10,8 @@ class MovieCatalog{
 
   // mantem um hashset com o id de todos os filmes que já possuem suas informações detalhadas armazenadas em cache
   // mantem um hashmap com o id dos filmes como chave e um objeto filme como valor contendo as infos do filme com aquele id
-  Set<int> cachedMovies = {};
-  Map<int, Movie> movies = {};
+  static Set<int> cachedMovies = {};
+  static Map<int, Movie> movies = {};
 
   // apiFetchPreviews
   // solicita para o dataFecther as informações resumidas de todos os filmes
