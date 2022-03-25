@@ -1,8 +1,5 @@
-# Desafio Técnico Tokenlab 2022
+# Movie Info App
 
-Projeto desenvolvido para o desafio técnico da Tokenlab para o "Estágio na área de Mobile"
+An app created to practice my flutter skills. Following MVC architecture, the app fetches information about 20 different movies from [Tokenlab's REST API](https://desafio-mobile.nyc3.digitaloceanspaces.com/movies) and displays it on screen
 
-- Tecnologia utilizada: Flutter
-- Padrão de arquitetura utilizado: MVC
-
-Download o apk ou acesse a pasta "[more details](https://github.com/fergorgs/moviesApp/tree/master/more_details)" para capturas de tela e detalhes sobre o funcionamento do app
+Download the apk or access the "[more details](https://github.com/fergorgs/moviesApp/tree/master/more_details)" folder for screenshots and information about the app’s implementation
